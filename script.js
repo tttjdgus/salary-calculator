@@ -583,7 +583,7 @@ function renderFeedback() {
 }
 
 function initFeedback() {
-  renderFeedback();
+ // 폼프리이용대체 renderFeedback();
 
   els.feedbackForm.addEventListener("submit", (e) => {
     e.preventDefault();
