@@ -1343,17 +1343,25 @@ function setDontShow(type, value) {
   } catch (e) {}
 }
 
-function openModal(modalId) {
+function openModal(modalId, options = {}) {
+  const { showDontShow = false } = options;
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
   const type = getModalType(modalId);
-  if (isDontShow(type)) return;
+  if (showDontShow && isDontShow(type)) return;
+
+  const footer = modal.querySelector('.modal-footer');
+  if (footer) {
+    footer.hidden = !showDontShow;
+  }
 
   const checkbox = modal.querySelector('.modal-dont-checkbox');
   if (checkbox) {
-    checkbox.checked = isDontShow(type);
+    checkbox.checked = showDontShow && isDontShow(type);
   }
+
+  modal.dataset.autoShow = showDontShow ? 'true' : 'false';
   modal.hidden = false;
 }
 
@@ -1362,11 +1370,29 @@ function closeModal(modalId) {
   if (!modal) return;
 
   const type = getModalType(modalId);
-  const checkbox = modal.querySelector('.modal-dont-checkbox');
-  if (checkbox && checkbox.checked) {
-    setDontShow(type, true);
+  const isAutoShow = modal.dataset.autoShow === 'true';
+
+  if (isAutoShow) {
+    const checkbox = modal.querySelector('.modal-dont-checkbox');
+    if (checkbox && checkbox.checked) {
+      setDontShow(type, true);
+    }
   }
+
   modal.hidden = true;
+  delete modal.dataset.autoShow;
+
+  if (isAutoShow && type === 'privacy' && !isDontShow('terms')) {
+    openModal('termsModal', { showDontShow: true });
+  }
+}
+
+function showFirstVisitLegalModals() {
+  if (!isDontShow('privacy')) {
+    openModal('privacyModal', { showDontShow: true });
+  } else if (!isDontShow('terms')) {
+    openModal('termsModal', { showDontShow: true });
+  }
 }
 
 function initLegalModals() {
@@ -1386,7 +1412,9 @@ function initLegalModals() {
 
     const type = getModalType(modal.id);
     checkbox.addEventListener('change', () => {
-      setDontShow(type, checkbox.checked);
+      if (modal.dataset.autoShow === 'true') {
+        setDontShow(type, checkbox.checked);
+      }
     });
   });
 
@@ -1395,10 +1423,11 @@ function initLegalModals() {
       e.preventDefault();
       const href = link.getAttribute('href');
       const type = href === '#privacy' ? 'privacy' : 'terms';
-      if (isDontShow(type)) return;
-      openModal(type + 'Modal');
+      openModal(type + 'Modal', { showDontShow: false });
     });
   });
+
+  showFirstVisitLegalModals();
 }
 
 init();
