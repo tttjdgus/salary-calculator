@@ -235,15 +235,80 @@
             <span id="payNet">0원</span>
           </div>
         </div>
+        <button type="button" class="pdf-download-btn" id="pdfDownloadBtn">PDF 다운로드</button>
       </section>
     </main>
 
     <section id="tabEmployee" class="tab-panel" role="tabpanel" aria-labelledby="tabBtnEmployee" hidden>
-      <div class="coming-soon card">
-        <span class="coming-soon-icon" aria-hidden="true">🚧</span>
-        <h2>준비 중</h2>
-        <p>직장인 급여 계산 기능은 곧 제공될 예정입니다.</p>
-      </div>
+      <section id="employeeSettings" class="card">
+        <h2 class="section-title">급여 설정</h2>
+
+        <div class="input-group">
+          <label for="employeeAnnualSalary">연봉 (원)</label>
+          <input type="number" id="employeeAnnualSalary" value="36000000" min="0" step="10000" inputmode="numeric">
+        </div>
+
+        <div class="input-group">
+          <label for="employeeFamilyCount">부양가족 수</label>
+          <select id="employeeFamilyCount">
+            <option value="0">0명</option>
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="5">5명 이상</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="employeeResults" class="card stats-section" aria-live="polite">
+        <h2 class="section-title">급여 명세</h2>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-label">월 급여</span>
+            <span class="stat-value" id="empMonthlyGross">0원</span>
+          </div>
+        </div>
+
+        <div class="deduction-section">
+          <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--text-muted);">공제 항목</h3>
+          <div class="pay-breakdown">
+            <div class="pay-row">
+              <span>국민연금</span>
+              <span id="empNationalPension">0원</span>
+            </div>
+            <div class="pay-row">
+              <span>건강보험</span>
+              <span id="empHealthInsurance">0원</span>
+            </div>
+            <div class="pay-row">
+              <span>장기요양</span>
+              <span id="empLongTermCare">0원</span>
+            </div>
+            <div class="pay-row">
+              <span>고용보험</span>
+              <span id="empEmploymentInsurance">0원</span>
+            </div>
+            <div class="pay-row">
+              <span>근로소득세</span>
+              <span id="empIncomeTax">0원</span>
+            </div>
+            <div class="pay-row">
+              <span>지방소득세</span>
+              <span id="empLocalTax">0원</span>
+            </div>
+            <div class="pay-row" style="border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px;">
+              <span>총 공제액</span>
+              <span id="empTotalDeduction">0원</span>
+            </div>
+            <div class="pay-row net">
+              <span>예상 실수령액</span>
+              <span id="empMonthlyNet">0원</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
     
 
@@ -265,12 +330,13 @@
       </form>
     </section>
 
-    
+
     <footer id="appFooter">
       <p>야간 22:00~06:00 · 연장 8h 초과 · 공휴일·주휴 1.5배 · 주 15h 이상 주휴수당</p>
     </footer>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
   <script>
     window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
