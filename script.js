@@ -1322,12 +1322,29 @@ function init() {
 
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) { modal.hidden = false; modal.style.display = 'flex'; }
+  if (modal) {
+    const type = modalId.replace(/Modal$/, '');
+    const checkbox = modal.querySelector('.modal-dont-checkbox');
+    if (checkbox) {
+      checkbox.checked = !!localStorage.getItem('dontShow_' + type);
+    }
+    modal.hidden = false;
+    modal.style.display = 'flex';
+  }
 }
 
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) { modal.hidden = true; modal.style.display = 'none'; }
+  if (modal) {
+    // if modal has a dont-show checkbox, persist when checked
+    const type = modalId.replace(/Modal$/, '');
+    const checkbox = modal.querySelector('.modal-dont-checkbox');
+    if (checkbox && checkbox.checked) {
+      try { localStorage.setItem('dontShow_' + type, 'true'); } catch (e) {}
+    }
+    modal.hidden = true;
+    modal.style.display = 'none';
+  }
 }
 
 function dontShowAgain(type) {
@@ -1337,7 +1354,7 @@ function dontShowAgain(type) {
 
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) { modal.hidden = true; modal.style.display = 'none'; }
+    if (e.target === modal) { closeModal(modal.id); }
   });
 });
 
